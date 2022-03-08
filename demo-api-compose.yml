@@ -2,13 +2,11 @@ version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: postgres:13.0-alpine
     volumes:
-      - ./app/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev.db
 
   web:
     build: .
@@ -17,9 +15,14 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    # environment:
+    #   - POSTGRES_NAME=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./.env.dev
     depends_on:
       - db
+
+volumes:
+  postgres_data:
